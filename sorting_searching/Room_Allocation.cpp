@@ -1,0 +1,115 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define fastio ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define all(v) v.begin(), v.end()
+#define rall(v) v.rbegin(), v.rend()
+#define sz(v) (int)v.size()
+#define fi first
+#define s second
+#define pb push_back
+#define endl '\n'
+
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef vector<pii> vpii;
+typedef vector<pll> vpll;
+
+const ll MOD = 1e9 + 7;
+const ll INF = 1e18;
+const ll EPS = 1e-9;
+
+#ifndef ONLINE_JUDGE
+    #define debug(x) cerr << #x << " = "; _print(x); cerr << endl;
+    template <typename T> void _print(T t) { cerr << t; }
+    template <typename T, typename V> void _print(pair<T, V> p) { cerr << "{" << p.first << ", " << p.second << "}"; }
+    template <typename T> void _print(vector<T> v) { cerr << "[ "; for (T i : v) _print(i), cerr << " "; cerr << "]"; }
+#else
+    #define debug(x)
+#endif
+
+ll gcd(ll a, ll b) { return b == 0 ? a : gcd(b, a % b); }
+ll lcm(ll a, ll b) { return (a / gcd(a, b)) * b; }
+ll mod_add(ll a, ll b, ll mod = MOD) { return (a + b) % mod; }
+ll mod_sub(ll a, ll b, ll mod = MOD) { return (a - b + mod) % mod; }
+ll mod_mul(ll a, ll b, ll mod = MOD) { return (a * b) % mod; }
+ll mod_pow(ll a, ll b, ll mod = MOD) { ll res = 1; while (b > 0) { if (b & 1) res = mod_mul(res, a, mod); a = mod_mul(a, a, mod); b >>= 1; } return res; } 
+ll mod_exp(ll b, ll e, ll m) { ll r = 1; while (e) { if (e & 1) r = (r * b) % m; b = (b * b) % m; e >>= 1; } return r; }
+template <typename T> void vin(vector<T>& v) { for (auto& x : v) cin >> x; }
+template <typename T> void vout(const vector<T>& v) { for (auto& x : v) cout << x << " "; cout << endl; }
+vll divisors(ll n) { vll d; for (ll i = 1; i * i <= n; ++i) if (n % i == 0) d.pb(i), (i != n / i ? d.pb(n / i) : void()); sort(all(d)); return d; }
+vll get_primes(ll n) { std::vector<bool> is_prime(n + 1, true); vll primes; for (ll i = 2; i <= n; ++i) if (is_prime[i]) { primes.push_back(i); for (ll j = i * i; j <= n; j += i) is_prime[j] = false; } return primes; }
+ll modInverse(ll a, ll m) {ll m0 = m, t, q; ll x0 = 0, x1 = 1; if (m == 1) return 0; while (a > 1) { q = a / m; t = m; m = a % m; a = t; t = x0; x0 = x1 - q * x0; x1 = t; }if (x1 < 0) x1 += m0; return x1;}
+
+#define forn(i, n) for (ll i = 0; i < ll(n); i++)
+#define yes cout << 'Y' << 'E' << 'S' << endl;
+#define no cout << 'N' << 'O' << endl;
+template <typename T> void print(const T& value) {cout << value << endl;}
+#define f(i,s,e) for(long long int i=s;i<e;i++)
+#define rf(i,e,s) for(long long int i=e-1;i>=s;i--)
+#define ump unordered_map<long long,long long>
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+void solve() {
+    ll n;
+    cin>>n;
+
+    vector<vector<int>> data(n,vector<int>(3));
+
+    for(int i=0;i<n;i++){
+        cin>>data[i][0]>>data[i][1];
+        data[i][2] = i;
+    }
+
+    sort(all(data));
+
+    priority_queue<
+        pair<int,int>,
+        vector<pair<int,int>>,
+        greater<pair<int,int>>
+    > pq; // {endTime, room}
+
+    set<int> free;
+    for(int i=1;i<=n;i++) free.insert(i);
+
+    vector<int> ans(n);
+    int maxRoom = 0;
+
+    for(int i=0;i<n;i++){
+        int a = data[i][0];
+        int d = data[i][1];
+        int idx = data[i][2];
+        // free rooms
+        while(!pq.empty() && pq.top().first < a){
+            // auto [endTime, room] = pq.top();
+            free.insert(pq.top().second);
+            pq.pop();
+        }
+
+        // allocate
+        int room = *free.begin();
+        free.erase(room);
+
+        pq.push({d, room});
+        ans[idx] = room;
+        maxRoom = max(maxRoom, room);
+    }
+
+    print(maxRoom);
+    vout(ans);
+
+}
+
+
+
+int main() {
+    fastio;
+    ll t=1;
+    // cin >> t;
+    while (t--) solve();
+    return 0;
+}
