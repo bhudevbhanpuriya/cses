@@ -27,3 +27,4 @@
 #include <typeinfo>     // Runtime type information
 #include <utility>      // Utility components (e.g., std::pair)
 #include <priority_queue>
+#include <tuple>
